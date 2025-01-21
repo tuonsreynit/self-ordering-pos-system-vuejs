@@ -1,0 +1,40 @@
+---
+- name: Deploy VueApp Playbook
+  hosts: workers  # Use the correct group name from your inventory
+  vars:
+    image_name: "tuonsreynit/vueapp:{{ docker_version }}"  # Pass 'docker_version' dynamically
+    container_name: "vueapp-container"
+    exposed_port: "5000"  # Host port
+    container_port: "80"  # Container port
+
+  tasks:
+    - name: Install Docker CE
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+
+    - name: Install Docker Compose
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
+        dest: /usr/local/bin/docker-compose
+        mode: 'u+x'
+
+    - name: Add user to docker group
+      user:
+        name: root  # Use the appropriate user, e.g., 'jenkins' if that's the user running the playbook
+        groups:
+          - docker
+        append: yes
+
+    - name: Start VueApp with Docker Compose
+      docker_compose:
+        project_name: vueapp-srv
+        definition:  # Use 'definition' instead of 'definitions'
+          version: '3.8'
+          services:
+            vueapp_srv:
+              image: "{{ image_name }}"
+              container_name: "{{ container_name }}"
+              ports:
+                - "{{ exposed_port }}:{{ container_port }}"

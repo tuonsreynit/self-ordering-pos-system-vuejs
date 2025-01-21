@@ -1,0 +1,12 @@
+---
+- name: Digital Ocean Droplet
+  hosts: 
+    - workers
+  become: true 
+  vars: 
+    worker_username: jaddee
+    worker_password: jaddee123
+    ssh_public_key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"  # Specify the path to your public key file
+
+  tasks:
+    - import_tasks: create_user.yml
