@@ -1,0 +1,28 @@
+---
+- name: Create a New Folder
+  hosts: 
+    - masters
+    - workers
+  become: true
+  tasks:
+    - name: update and upgrade apt 
+      apt: 
+        update_cache: yes 
+    - name: upgrade disk 
+      apt: 
+        upgrade: dist
+    - name: remove unncessary packages 
+      apt: 
+        autoremove: yes
+  # tasks:
+  #   - name: Create a new directory
+  #     file:
+  #       path: /root/istad-devops/ansible-playbook  # Replace with your desired folder path
+  #       state: directory
+  #       mode: '0755'  # Optional: set permissions for the new folder
+  # tasks:
+  #   - name: Create a new empty file
+  #     file:
+  #       path: /root/istad-devops/ansible-playbook/me.txt  # Replace with the desired file path
+  #       state: touch  # Creates an empty file if it doesn't exist
+  #       mode: '0644'  
