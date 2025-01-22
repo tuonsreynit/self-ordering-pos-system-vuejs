@@ -8,7 +8,7 @@ env:
   IMAGE_NAME: vuejs-image
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: DOCKERHUB_REPOSITORY
     steps:
       - name: Checkout code
