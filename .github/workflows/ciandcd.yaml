@@ -40,7 +40,7 @@ jobs:
           docker buildx create --use
           
           # Build the Docker image for amd64 and arm64 platforms and push it
-          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:${{ env.TAG }} . --push
+          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} . --push
 
       - name: Log out from Docker Hub
         if: always()
