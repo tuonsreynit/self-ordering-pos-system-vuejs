@@ -8,7 +8,7 @@ env:
   IMAGE_NAME: vuejs-image
   # TAG: "v0.1.0"
   HELM_REPO: tuonsreynit/sample-one.git
-  GITHUB_REGISTRY: https://hub.docker.com
+  # GITHUB_REGISTRY: tuonsreynit
 
 jobs:
   build-and-push:
@@ -46,6 +46,7 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest 
     environment: HELM_REPOSITORY
+    environment: DOCKERHUB_REPOSITORY
     steps:  
       - name: Installing yq for easily work with the values file 
         run: |
@@ -70,7 +71,7 @@ jobs:
         run: |
           
           cd helm-repo 
-          yq -i ".image.repository=\"${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}\"" nginx-argocd-chart/values.yaml
+          yq -i ".image.repository=\"${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}\"" nginx-argocd-chart/values.yaml
           
           yq -i ".image.tag=\"${{ env.TAG }}\"" nginx-argocd-chart/values.yaml
 
