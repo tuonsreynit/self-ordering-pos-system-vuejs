@@ -70,7 +70,7 @@ jobs:
         run: |
           
           cd helm-repo 
-          yq -i ".image.repository=\"${{ env. }}/${{ env.IMAGE_NAME }}\"" nginx-argocd-chart/values.yaml
+          yq -i ".image.repository=\"${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}\"" nginx-argocd-chart/values.yaml
           
           yq -i ".image.tag=\"${{ env.TAG }}\"" nginx-argocd-chart/values.yaml
 
