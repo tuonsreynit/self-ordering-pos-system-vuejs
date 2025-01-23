@@ -55,20 +55,22 @@ jobs:
       - name: Use with SHA
         run: |
           echo "TAG=${GITHUB_SHA::8}" >> $GITHUB_ENV
+
       - name: Showing the tags value 
         run: | 
           echo "This is the value of tag : ${{ env.TAG }}"
+          
       - name: Checkout Helm repository
         run: |
           git clone https://${{ secrets.GIT_TOKEN }}@github.com/${{ env.HELM_REPO }} helm-repo
         env:
           GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+
       - name: Update Helm chart
         env: 
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
           TAG: ${{ env.TAG }}
         run: |
-          
           cd helm-repo 
           yq -i ".image.repository=\"${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}\"" nginx-argocd-chart/values.yaml
           
@@ -79,6 +81,7 @@ jobs:
           git add .
           git commit -m "Update image to ${{ env.IMAGE_NAME }}:${{ env.TAG }}"
           git push https://${{ secrets.GIT_TOKEN }}@github.com/${{ env.HELM_REPO }}
+          
       - name: Clean up
         run: |
           rm -rf helm-repo
