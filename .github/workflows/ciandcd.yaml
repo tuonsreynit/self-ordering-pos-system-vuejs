@@ -7,6 +7,8 @@ on:
 env:
   IMAGE_NAME: vuejs-image
   # TAG: "v0.1.0"
+  HELM_REPO: tuonsreynit/sample-one.git
+  GITHUB_REGISTRY: https://hub.docker.com
 
 jobs:
   build-and-push:
@@ -39,4 +41,45 @@ jobs:
       - name: Log out from Docker Hub
         if: always()
         run: docker logout
+  
+  update-helm-repo: 
+    needs: build-and-push
+    runs-on: ubuntu-latest 
+    environment: HELM_REPOSITORY
+    steps:  
+      - name: Installing yq for easily work with the values file 
+        run: |
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          chmod +x /usr/local/bin/yq
+
+      - name: Use with SHA
+        run: |
+          echo "TAG=${GITHUB_SHA::8}" >> $GITHUB_ENV
+      - name: Showing the tags value 
+        run: | 
+          echo "This is the value of tag : ${{ env.TAG }}"
+      - name: Checkout Helm repository
+        run: |
+          git clone https://${{ secrets.GIT_TOKEN }}@github.com/${{ env.HELM_REPO }} helm-repo
+        env:
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+      - name: Update Helm chart
+        env: 
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          TAG: ${{ env.TAG }}
+        run: |
+          
+          cd helm-repo 
+          yq -i ".image.repository=\"${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}\"" nginx-argocd-chart/values.yaml
+          
+          yq -i ".image.tag=\"${{ env.TAG }}\"" nginx-argocd-chart/values.yaml
+
+          git config --global user.email "monittuon@gmail.com"
+          git config --global user.name "tuonsreynit"
+          git add .
+          git commit -m "Update image to ${{ env.IMAGE_NAME }}:${{ env.TAG }}"
+          git push https://${{ secrets.GIT_TOKEN }}@github.com/${{ env.HELM_REPO }}
+      - name: Clean up
+        run: |
+          rm -rf helm-repo
 
