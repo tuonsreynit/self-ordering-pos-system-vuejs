@@ -81,8 +81,7 @@ jobs:
           git add .
           git commit -m "Update image to ${{ env.IMAGE_NAME }}:${{ env.TAG }}"
           git push https://${{ secrets.GIT_TOKEN }}@github.com/${{ env.HELM_REPO }}
-          
+
       - name: Clean up
         run: |
           rm -rf helm-repo
-
