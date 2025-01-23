@@ -5,7 +5,7 @@
         <h2 class="text-2xl font-bold mb-6 text-white">Login</h2>
         <form method="post" @submit="login">
           <div class="mb-4">
-            <label class="block text-black text-sm font-bold mb-2" for="username">My Username</label>
+            <label class="block text-black text-sm font-bold mb-2" for="username">Username</label>
             <input v-model="username" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Enter your username">
           </div>
           <div class="mb-6">
