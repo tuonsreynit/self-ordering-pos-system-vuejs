@@ -46,7 +46,6 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest 
     environment: HELM_REPOSITORY
-    environment: DOCKERHUB_REPOSITORY
     steps:  
       - name: Installing yq for easily work with the values file 
         run: |
